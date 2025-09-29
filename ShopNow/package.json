@@ -1,0 +1,28 @@
+{
+	"name": "shopnow-duplicate-management",
+	"version": "1.0.0",
+	"description": "Salesforce duplicate management system with React frontend",
+	"scripts": {
+		"setup:oauth": "node scripts/setup-oauth.js",
+		"setup:dev": "npm run setup:oauth && cd app && npm install && cd ../server && npm install",
+		"dev": "./start-dev.sh",
+		"dev:windows": "start-dev.bat",
+		"start": "cd app && npm run dev",
+		"start:server": "cd server && npm start",
+		"kill-ports": "./kill-ports.sh",
+		"build": "cd app && npm run build",
+		"deploy:salesforce": "sf project deploy start --source-dir force-app",
+		"deploy:full": "npm run deploy:salesforce && npm run build"
+	},
+	"keywords": [
+		"salesforce",
+		"duplicate-management",
+		"react",
+		"oauth"
+	],
+	"author": "Your Name",
+	"license": "MIT",
+	"engines": {
+		"node": ">=16.0.0"
+	}
+}

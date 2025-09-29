@@ -1,0 +1,78 @@
+/* Custom styling for the Test Data Generator component */
+
+.slds-alert_success {
+	border-left: 4px solid #4bca81;
+}
+
+.slds-alert_error {
+	border-left: 4px solid #ea001e;
+}
+
+.slds-box {
+	background-color: #fafaf9;
+	border: 1px solid #dddbda;
+}
+
+.slds-box_small {
+	padding: 1rem;
+}
+
+.slds-text-heading_medium {
+	font-size: 1.5rem;
+	font-weight: 700;
+}
+
+.slds-text-color_success {
+	color: #4bca81;
+}
+
+.slds-text-color_warning {
+	color: #ffb75d;
+}
+
+.slds-text-color_error {
+	color: #ea001e;
+}
+
+.slds-text-color_default {
+	color: #706e6b;
+}
+
+/* Statistics cards hover effect */
+.slds-col:hover .slds-text-heading_medium {
+	transform: scale(1.1);
+	transition: transform 0.2s ease-in-out;
+}
+
+/* Button group spacing */
+.slds-grid.slds-gutters_small .slds-col {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+}
+
+/* Loading overlay */
+.slds-is-relative {
+	position: relative;
+	min-height: 3rem;
+}
+
+/* Message styling improvements */
+.slds-notify {
+	border-radius: 0.25rem;
+	padding: 1rem;
+}
+
+.slds-list_dotted {
+	margin-left: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.slds-grid.slds-gutters_small .slds-col {
+		margin-bottom: 0.5rem;
+	}
+
+	.slds-size_1-of-2 {
+		width: 100%;
+	}
+}
