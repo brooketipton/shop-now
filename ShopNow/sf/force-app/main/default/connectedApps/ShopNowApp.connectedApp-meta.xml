@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>your-email@domain.com</contactEmail>
+    <description>React application for managing duplicate customer records in ShopNow</description>
+    <label>ShopNow Duplicate Management</label>
+    <oauthConfig>
+        <callbackUrl>http://localhost:5173
+http://localhost:5174
+http://localhost:3000</callbackUrl>
+        <scopes>Api</scopes>
+        <scopes>Full</scopes>
+        <scopes>RefreshToken</scopes>
+        <isIntrospectAllTokens>false</isIntrospectAllTokens>
+    </oauthConfig>
+    <oauthPolicy>
+        <refreshTokenPolicy>infinite</refreshTokenPolicy>
+    </oauthPolicy>
+</ConnectedApp>

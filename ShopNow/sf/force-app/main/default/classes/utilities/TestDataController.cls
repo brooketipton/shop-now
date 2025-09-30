@@ -7,9 +7,6 @@
  * - Clean unique customers
  */
 public with sharing class TestDataController {
-	/**
-	 * Result wrapper for test data generation operations.
-	 */
 	public class TestDataResult {
 		@AuraEnabled
 		public Boolean success;
@@ -28,8 +25,9 @@ public with sharing class TestDataController {
 	}
 
 	/**
-	 * Generates a comprehensive set of test customer data for duplicate detection testing.
-	 * Creates various scenarios including exact duplicates, near duplicates, and unique customers.
+	 * Generates a set of test customer data for duplicate detection testing
+	 * Creates various scenarios including exact duplicates, close duplicates, and
+	 * completley unique customers
 	 *
 	 * @return TestDataResult with operation details
 	 */
@@ -40,22 +38,12 @@ public with sharing class TestDataController {
 		try {
 			List<Customer__c> testCustomers = new List<Customer__c>();
 
-			// Scenario 1: Exact email duplicates (should score 100)
 			testCustomers.addAll(createExactEmailDuplicates());
-
-			// Scenario 2: Same phone + similar names (should score 70)
 			testCustomers.addAll(createPhoneNameSimilarDuplicates());
-
-			// Scenario 3: Same phone + exact last name (should score 50)
 			testCustomers.addAll(createPhoneLastNameDuplicates());
-
-			// Scenario 4: Unique customers (no duplicates)
 			testCustomers.addAll(createUniqueCustomers());
-
-			// Scenario 5: Edge cases for testing
 			testCustomers.addAll(createEdgeCaseCustomers());
 
-			// Insert all test customers
 			insert testCustomers;
 
 			result.customersCreated = testCustomers.size();
@@ -87,13 +75,11 @@ public with sharing class TestDataController {
 		TestDataResult result = new TestDataResult();
 
 		try {
-			// Delete all duplicate matches first (due to foreign key relationships)
 			List<Duplicate_Match__c> allMatches = [SELECT Id FROM Duplicate_Match__c];
 			if (!allMatches.isEmpty()) {
 				delete allMatches;
 			}
 
-			// Delete all customers
 			List<Customer__c> allCustomers = [SELECT Id FROM Customer__c];
 			if (!allCustomers.isEmpty()) {
 				delete allCustomers;
@@ -116,9 +102,6 @@ public with sharing class TestDataController {
 		return result;
 	}
 
-	/**
-	 * Creates customers with identical emails (exact duplicates).
-	 */
 	private static List<Customer__c> createExactEmailDuplicates() {
 		return new List<Customer__c>{
 			new Customer__c(
@@ -152,9 +135,6 @@ public with sharing class TestDataController {
 		};
 	}
 
-	/**
-	 * Creates customers with same phone and similar names (fuzzy duplicates).
-	 */
 	private static List<Customer__c> createPhoneNameSimilarDuplicates() {
 		return new List<Customer__c>{
 			new Customer__c(
@@ -188,9 +168,6 @@ public with sharing class TestDataController {
 		};
 	}
 
-	/**
-	 * Creates customers with same phone and exact last name match.
-	 */
 	private static List<Customer__c> createPhoneLastNameDuplicates() {
 		return new List<Customer__c>{
 			new Customer__c(
@@ -224,9 +201,6 @@ public with sharing class TestDataController {
 		};
 	}
 
-	/**
-	 * Creates unique customers with no duplicates.
-	 */
 	private static List<Customer__c> createUniqueCustomers() {
 		return new List<Customer__c>{
 			new Customer__c(
@@ -253,30 +227,22 @@ public with sharing class TestDataController {
 		};
 	}
 
-	/**
-	 * Creates edge case customers for testing boundary conditions.
-	 */
 	private static List<Customer__c> createEdgeCaseCustomers() {
 		return new List<Customer__c>{
-			// Customer with missing first name
 			new Customer__c(
 				LastName__c = 'NoFirstName',
 				Email__c = 'nofirst@test.com',
 				Phone__c = '555-000-1111',
 				SignupDate__c = Date.today().addDays(-40)
 			),
-			// Customer with missing last name
 			new Customer__c(
 				FirstName__c = 'NoLast',
 				Email__c = 'nolast@test.com',
 				Phone__c = '555-000-2222',
 				SignupDate__c = Date.today().addDays(-35)
 			),
-			// Customer with only email
 			new Customer__c(Email__c = 'emailonly@test.com', SignupDate__c = Date.today().addDays(-32)),
-			// Customer with only phone
 			new Customer__c(Phone__c = '555-000-3333', SignupDate__c = Date.today().addDays(-28)),
-			// Customer with special characters in name
 			new Customer__c(
 				FirstName__c = 'José',
 				LastName__c = 'García-Rodriguez',
@@ -297,7 +263,6 @@ public with sharing class TestDataController {
 		TestDataResult result = new TestDataResult();
 
 		try {
-			// Execute the batch job
 			Id batchJobId = Database.executeBatch(new BatchDuplicateScan(), 200);
 
 			result.message = 'Duplicate scan batch job started successfully. Job ID: ' + batchJobId;

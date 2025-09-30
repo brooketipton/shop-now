@@ -7,10 +7,10 @@ import {
 } from "@tanstack/react-table";
 import { duplicateApi } from "../api-proxy";
 import { DuplicateMatch } from "../types";
+import styles from "./DuplicateTable.module.css";
 
 const columnHelper = createColumnHelper<DuplicateMatch>();
 
-// Helper function to format customer name
 const formatCustomerName = (
 	firstName: string | null,
 	lastName: string | null
@@ -23,21 +23,21 @@ const formatCustomerName = (
 const columns = [
 	columnHelper.accessor("matchScore", {
 		header: "Score",
-		cell: (info) => `${info.getValue()}`,
+		cell: (info) => <span className={styles.scoreCell}>{info.getValue()}</span>,
 	}),
 	columnHelper.accessor("customerA", {
 		header: "Customer A",
 		cell: (info) => {
 			const customer = info.getValue();
 			return (
-				<div>
-					<div style={{ fontWeight: "bold" }}>
+				<div className={styles.customerInfo}>
+					<div className={styles.customerName}>
 						{formatCustomerName(customer.firstName, customer.lastName)}
 					</div>
-					<div style={{ fontSize: "12px", color: "#666" }}>
+					<div className={styles.customerDetail}>
 						{customer.email || "No email"}
 					</div>
-					<div style={{ fontSize: "12px", color: "#666" }}>
+					<div className={styles.customerDetail}>
 						{customer.phone || "No phone"}
 					</div>
 				</div>
@@ -49,14 +49,14 @@ const columns = [
 		cell: (info) => {
 			const customer = info.getValue();
 			return (
-				<div>
-					<div style={{ fontWeight: "bold" }}>
+				<div className={styles.customerInfo}>
+					<div className={styles.customerName}>
 						{formatCustomerName(customer.firstName, customer.lastName)}
 					</div>
-					<div style={{ fontSize: "12px", color: "#666" }}>
+					<div className={styles.customerDetail}>
 						{customer.email || "No email"}
 					</div>
-					<div style={{ fontSize: "12px", color: "#666" }}>
+					<div className={styles.customerDetail}>
 						{customer.phone || "No phone"}
 					</div>
 				</div>
@@ -77,9 +77,8 @@ function ActionButtons({ match }: { match: DuplicateMatch }) {
 		mutationFn: ({ action }: { action: "merge" | "ignore" }) =>
 			duplicateApi.resolve(match.id, action),
 		onSuccess: (data) => {
-			// Show success message
 			console.log("Duplicate resolved:", data.message);
-			// Refresh the duplicates list
+			// refresh the duplicates list
 			queryClient.invalidateQueries({ queryKey: ["duplicates"] });
 		},
 		onError: (error) => {
@@ -88,35 +87,17 @@ function ActionButtons({ match }: { match: DuplicateMatch }) {
 	});
 
 	return (
-		<div style={{ display: "flex", gap: "8px" }}>
+		<div className={styles.actionButtons}>
 			<button
 				onClick={() => resolveMutation.mutate({ action: "merge" })}
 				disabled={resolveMutation.isPending}
-				style={{
-					padding: "8px 16px",
-					backgroundColor: resolveMutation.isPending ? "#9ca3af" : "#22c55e",
-					color: "white",
-					border: "none",
-					borderRadius: "4px",
-					cursor: resolveMutation.isPending ? "not-allowed" : "pointer",
-					fontSize: "14px",
-					fontWeight: "500",
-				}}>
+				className={`${styles.actionButton} ${styles.mergeButton}`}>
 				{resolveMutation.isPending ? "..." : "Merge"}
 			</button>
 			<button
 				onClick={() => resolveMutation.mutate({ action: "ignore" })}
 				disabled={resolveMutation.isPending}
-				style={{
-					padding: "8px 16px",
-					backgroundColor: resolveMutation.isPending ? "#9ca3af" : "#ef4444",
-					color: "white",
-					border: "none",
-					borderRadius: "4px",
-					cursor: resolveMutation.isPending ? "not-allowed" : "pointer",
-					fontSize: "14px",
-					fontWeight: "500",
-				}}>
+				className={`${styles.actionButton} ${styles.ignoreButton}`}>
 				{resolveMutation.isPending ? "..." : "Ignore"}
 			</button>
 		</div>
@@ -124,10 +105,11 @@ function ActionButtons({ match }: { match: DuplicateMatch }) {
 }
 
 export default function DuplicateTable() {
+	// auto-refresh every 30 seconds to keep data accurate
 	const { data, isLoading, error } = useQuery({
 		queryKey: ["duplicates"],
 		queryFn: () => duplicateApi.getPending(),
-		refetchInterval: 30000, // Auto-refresh every 30 seconds
+		refetchInterval: 30000,
 	});
 
 	const table = useReactTable({
@@ -138,14 +120,7 @@ export default function DuplicateTable() {
 
 	if (isLoading) {
 		return (
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					padding: "40px",
-					fontSize: "16px",
-				}}>
+			<div className={styles.loadingContainer}>
 				Loading duplicate matches...
 			</div>
 		);
@@ -153,83 +128,33 @@ export default function DuplicateTable() {
 
 	if (error) {
 		return (
-			<div
-				style={{
-					padding: "20px",
-					backgroundColor: "#fef2f2",
-					border: "1px solid #fecaca",
-					borderRadius: "8px",
-					color: "#dc2626",
-				}}>
-				<h3>Error loading duplicates</h3>
-				<p>
-					{error instanceof Error
-						? error.message
-						: "An unexpected error occurred"}
-				</p>
+			<div className={styles.errorContainer}>
+				Error loading duplicates:{" "}
+				{error instanceof Error
+					? error.message
+					: "An unexpected error occurred"}
 			</div>
 		);
 	}
 
 	if (!data || data.length === 0) {
 		return (
-			<div
-				style={{
-					padding: "40px",
-					textAlign: "center",
-					backgroundColor: "#f0fdf4",
-					border: "1px solid #bbf7d0",
-					borderRadius: "8px",
-					color: "#166534",
-				}}>
-				<h3>No pending duplicates found</h3>
-				<p>All duplicate matches have been resolved or no duplicates exist.</p>
+			<div className={styles.emptyContainer}>
+				No pending duplicates found. All matches have been resolved.
 			</div>
 		);
 	}
 
 	return (
 		<div>
-			<div
-				style={{
-					marginBottom: "20px",
-					padding: "16px",
-					backgroundColor: "#eff6ff",
-					border: "1px solid #bfdbfe",
-					borderRadius: "8px",
-				}}>
-				<h2 style={{ margin: "0 0 8px 0", color: "#1e40af" }}>
-					Pending Duplicate Reviews
-				</h2>
-				<p style={{ margin: 0, color: "#1e40af" }}>
-					Found {data.length} duplicate match{data.length !== 1 ? "es" : ""}{" "}
-					requiring review
-				</p>
-			</div>
-
-			<div
-				style={{
-					border: "1px solid #e5e7eb",
-					borderRadius: "8px",
-					overflow: "hidden",
-					backgroundColor: "white",
-				}}>
-				<table style={{ width: "100%", borderCollapse: "collapse" }}>
+			<h2>Pending Duplicate Reviews ({data.length})</h2>
+			<div className={styles.tableContainer}>
+				<table className={styles.table}>
 					<thead>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<tr key={headerGroup.id}>
 								{headerGroup.headers.map((header) => (
-									<th
-										key={header.id}
-										style={{
-											padding: "16px",
-											textAlign: "left",
-											borderBottom: "2px solid #e5e7eb",
-											backgroundColor: "#f9fafb",
-											fontWeight: "600",
-											fontSize: "14px",
-											color: "#374151",
-										}}>
+									<th key={header.id} className={styles.tableHeader}>
 										{flexRender(
 											header.column.columnDef.header,
 											header.getContext()
@@ -241,18 +166,9 @@ export default function DuplicateTable() {
 					</thead>
 					<tbody>
 						{table.getRowModel().rows.map((row) => (
-							<tr
-								key={row.id}
-								style={{
-									borderBottom: "1px solid #f3f4f6",
-								}}>
+							<tr key={row.id} className={styles.tableRow}>
 								{row.getVisibleCells().map((cell) => (
-									<td
-										key={cell.id}
-										style={{
-											padding: "16px",
-											verticalAlign: "top",
-										}}>
+									<td key={cell.id} className={styles.tableCell}>
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
 									</td>
 								))}

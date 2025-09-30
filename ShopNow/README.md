@@ -4,25 +4,33 @@ A comprehensive solution for managing duplicate customer records in Salesforce w
 
 ## 🚀 Quick Start
 
-### Prerequisites
+> **Setup** Check out the comprehensive [SETUP.md](SETUP.md) guide for detailed setup instructions and project overview!
 
-- Node.js 16+
-- Salesforce CLI (`npm install -g @salesforce/cli`)
-- Authenticated Salesforce org (`sf org login web`)
-
-### Automated Setup
+### Super Quick Start
 
 ```bash
 # Clone and setup everything automatically
 git clone <your-repo>
 cd ShopNow
 
-# Run the automated OAuth setup script
-npm run setup:oauth
+# Install all dependencies
+npm run setup
 
-# Start the development server
+# Start the development environment
 npm start
 ```
+
+**That's it!** The script will:
+
+- ✅ Install dependencies for React app, server, and Salesforce
+- ✅ Start both the React frontend (http://localhost:5173) and Node.js server (http://localhost:3001)
+- ✅ Show live logs from both services
+
+### Prerequisites
+
+- Node.js 16+
+- Salesforce CLI (`npm install -g @salesforce/cli`)
+- Authenticated Salesforce org (`sf org login web`)
 
 The setup script will:
 

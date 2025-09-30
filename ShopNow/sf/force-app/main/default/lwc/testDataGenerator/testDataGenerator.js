@@ -19,7 +19,6 @@ export default class TestDataGenerator extends LightningElement {
 		mergedCustomers: 0
 	};
 
-	// Computed properties for styling
 	get messageVariant() {
 		const baseClass = "slds-notify slds-notify_alert slds-m-bottom_medium";
 		return this.messageType === "success" ? `${baseClass} slds-alert_success` : `${baseClass} slds-alert_error`;
@@ -29,14 +28,10 @@ export default class TestDataGenerator extends LightningElement {
 		return this.errors && this.errors.length > 0;
 	}
 
-	// Lifecycle hook
 	connectedCallback() {
 		this.loadStatistics();
 	}
 
-	/**
-	 * Loads current data statistics from the server
-	 */
 	async loadStatistics() {
 		try {
 			const result = await getDataStatistics();
@@ -48,9 +43,6 @@ export default class TestDataGenerator extends LightningElement {
 		}
 	}
 
-	/**
-	 * Refreshes the statistics display
-	 */
 	refreshStatistics() {
 		this.loadStatistics();
 	}
@@ -87,7 +79,6 @@ export default class TestDataGenerator extends LightningElement {
 	 * Clears all customer and duplicate match data
 	 */
 	async clearAllData() {
-		// Show confirmation dialog
 		const confirmed = confirm(
 			"Are you sure you want to delete ALL customer and duplicate match data? This action cannot be undone."
 		);
@@ -154,9 +145,6 @@ export default class TestDataGenerator extends LightningElement {
 		}
 	}
 
-	/**
-	 * Shows a success message
-	 */
 	showSuccessMessage(title, message) {
 		this.messageTitle = title;
 		this.messageText = message;
@@ -165,9 +153,6 @@ export default class TestDataGenerator extends LightningElement {
 		this.showMessage = true;
 	}
 
-	/**
-	 * Shows an error message
-	 */
 	showErrorMessage(title, message, errors = []) {
 		this.messageTitle = title;
 		this.messageText = message;
@@ -176,9 +161,6 @@ export default class TestDataGenerator extends LightningElement {
 		this.showMessage = true;
 	}
 
-	/**
-	 * Hides the message display
-	 */
 	hideMessage() {
 		this.showMessage = false;
 		this.messageTitle = "";
@@ -187,9 +169,6 @@ export default class TestDataGenerator extends LightningElement {
 		this.errors = [];
 	}
 
-	/**
-	 * Dismisses the current message
-	 */
 	dismissMessage() {
 		this.hideMessage();
 	}

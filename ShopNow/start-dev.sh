@@ -5,6 +5,9 @@
 
 echo "🚀 Starting ShopNow Development Environment..."
 echo "================================================"
+echo "   React App will be available at: http://localhost:5173"
+echo "   Express Server will be available at: http://localhost:3001"
+echo "================================================"
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -59,7 +62,14 @@ install_deps_if_needed "server" "Server"
 install_deps_if_needed "app" "React App"
 
 echo ""
-echo -e "${YELLOW}🔧 Starting services...${NC}"
+echo -e "${YELLOW}🔧 Checking ports and starting services...${NC}"
+
+# Check if ports are in use and kill them if needed
+if lsof -i :3001 > /dev/null 2>&1 || lsof -i :5173 > /dev/null 2>&1; then
+    echo -e "${YELLOW}⚠️  Ports 3001 or 5173 are in use. Cleaning up...${NC}"
+    ./kill-ports.sh --force
+    echo -e "${GREEN}✅ Ports cleaned up${NC}"
+fi
 
 # Function to cleanup background processes on script exit
 cleanup() {
@@ -73,6 +83,8 @@ cleanup() {
         kill $APP_PID 2>/dev/null
         echo -e "${GREEN}✅ React app stopped${NC}"
     fi
+    # Also kill any processes still using our ports
+    ./kill-ports.sh --force > /dev/null 2>&1
     exit 0
 }
 

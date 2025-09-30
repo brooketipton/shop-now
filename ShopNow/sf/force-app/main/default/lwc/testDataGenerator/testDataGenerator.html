@@ -1,7 +1,29 @@
 <template>
 	<lightning-card title="Test Data Generator" icon-name="utility:database">
 		<div class="slds-p-horizontal_medium slds-p-bottom_medium">
-			<!-- Current Data Statistics -->
+			<template if:true={isLoading}>
+				<div class="slds-is-relative">
+					<lightning-spinner alternative-text="Processing..." size="medium"></lightning-spinner>
+				</div>
+			</template>
+			<template if:true={showMessage}>
+				<div class={messageVariant} role="alert">
+					<span class="slds-assistive-text">{messageType}</span>
+					<h2>{messageTitle}</h2>
+					<p>{messageText}</p>
+					<template if:true={hasErrors}>
+						<ul class="slds-list_dotted slds-m-top_small">
+							<template for:each={errors} for:item="error">
+								<li key={error}>{error}</li>
+							</template>
+						</ul>
+					</template>
+					<div class="slds-m-top_small">
+						<lightning-button label="Dismiss" onclick={dismissMessage} variant="neutral" size="small">
+						</lightning-button>
+					</div>
+				</div>
+			</template>
 			<div class="slds-box slds-box_small slds-m-bottom_medium">
 				<h3 class="slds-text-heading_small slds-m-bottom_small">Current Data Statistics</h3>
 				<div class="slds-grid slds-wrap slds-gutters_small">
@@ -15,7 +37,7 @@
 					</div>
 					<div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
 						<div class="slds-text-align_center">
-							<div class="slds-text-heading_medium slds-text-color_warning">
+							<div class="slds-text-heading_medium slds-text-color_default">
 								{statistics.pendingMatches}
 							</div>
 							<div class="slds-text-body_small">Pending Matches</div>
@@ -56,14 +78,11 @@
 					</lightning-button>
 				</div>
 			</div>
-
-			<!-- Test Data Generation Section -->
 			<div class="slds-box slds-box_small slds-m-bottom_medium">
 				<h3 class="slds-text-heading_small slds-m-bottom_small">Generate Test Data</h3>
 				<p class="slds-text-body_regular slds-m-bottom_medium">
 					Creates comprehensive test customer data including various duplicate scenarios:
 				</p>
-
 				<ul class="slds-list_dotted slds-m-bottom_medium">
 					<li><strong>Exact Email Duplicates</strong> - Same email addresses (Score: 100)</li>
 					<li><strong>Phone + Name Similarity</strong> - Same phone with similar names (Score: 70)</li>
@@ -71,7 +90,6 @@
 					<li><strong>Unique Customers</strong> - Clean records with no duplicates</li>
 					<li><strong>Edge Cases</strong> - Missing fields and special characters</li>
 				</ul>
-
 				<div class="slds-grid slds-gutters_small">
 					<div class="slds-col">
 						<lightning-button
@@ -93,8 +111,6 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- Data Management Section -->
 			<div class="slds-box slds-box_small slds-m-bottom_medium">
 				<h3 class="slds-text-heading_small slds-m-bottom_small">Data Management</h3>
 				<p class="slds-text-body_regular slds-m-bottom_medium">
@@ -115,33 +131,6 @@
 				>
 				</lightning-button>
 			</div>
-
-			<!-- Loading Spinner -->
-			<template if:true={isLoading}>
-				<div class="slds-is-relative">
-					<lightning-spinner alternative-text="Processing..." size="medium"></lightning-spinner>
-				</div>
-			</template>
-
-			<!-- Success/Error Messages -->
-			<template if:true={showMessage}>
-				<div class={messageVariant} role="alert">
-					<span class="slds-assistive-text">{messageType}</span>
-					<h2>{messageTitle}</h2>
-					<p>{messageText}</p>
-					<template if:true={hasErrors}>
-						<ul class="slds-list_dotted slds-m-top_small">
-							<template for:each={errors} for:item="error">
-								<li key={error}>{error}</li>
-							</template>
-						</ul>
-					</template>
-					<div class="slds-m-top_small">
-						<lightning-button label="Dismiss" onclick={dismissMessage} variant="neutral" size="small">
-						</lightning-button>
-					</div>
-				</div>
-			</template>
 		</div>
 	</lightning-card>
 </template>

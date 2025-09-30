@@ -3,15 +3,17 @@
 	"version": "1.0.0",
 	"description": "Salesforce duplicate management system with React frontend",
 	"scripts": {
-		"setup:oauth": "node scripts/setup-oauth.js",
-		"setup:dev": "npm run setup:oauth && cd app && npm install && cd ../server && npm install",
+		"start": "./start-dev.sh",
+		"setup": "cd app && npm install && cd ../server && npm install && cd ../sf && npm install",
 		"dev": "./start-dev.sh",
-		"dev:windows": "start-dev.bat",
-		"start": "cd app && npm run dev",
+		"start:app": "cd app && npm run dev",
 		"start:server": "cd server && npm start",
-		"kill-ports": "./kill-ports.sh",
 		"build": "cd app && npm run build",
-		"deploy:salesforce": "sf project deploy start --source-dir force-app",
+		"test": "cd app && npm test && cd ../sf && npm test",
+		"lint": "cd app && npm run lint",
+		"clean": "rm -rf app/node_modules server/node_modules sf/node_modules && rm -f app/package-lock.json server/package-lock.json sf/package-lock.json",
+		"kill-ports": "./kill-ports.sh --force",
+		"deploy:salesforce": "cd sf && sf project deploy start",
 		"deploy:full": "npm run deploy:salesforce && npm run build"
 	},
 	"keywords": [

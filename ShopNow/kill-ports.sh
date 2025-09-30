@@ -3,6 +3,12 @@
 # Kill processes using common development ports
 # This script helps clean up stuck processes
 
+# Check for force flag
+FORCE=false
+if [ "$1" = "--force" ] || [ "$1" = "-f" ]; then
+    FORCE=true
+fi
+
 echo "🔍 Checking for processes using development ports..."
 
 # Common ports used by the app
@@ -25,8 +31,13 @@ for PORT in "${PORTS[@]}"; do
         lsof -i :$PORT
         
         # Ask user if they want to kill the process
-        read -p "Kill process(es) using port $PORT? (y/N): " -n 1 -r
-        echo
+        if [ "$FORCE" = true ]; then
+            echo "🔥 Force killing processes on port $PORT..."
+            REPLY="y"
+        else
+            read -p "Kill process(es) using port $PORT? (y/N): " -n 1 -r
+            echo
+        fi
         
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             for PID in $PIDS; do

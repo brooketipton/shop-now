@@ -1,15 +1,14 @@
 /**
- * Utility class for calculating Jaro-Winkler string similarity.
+ * Utility class for calculating Jaro-Winkler string similarity
  *
  * The Jaro-Winkler algorithm measures similarity between two strings,
  * returning a value between 0 (no similarity) and 1 (identical strings).
  * It gives higher scores to strings that:
  * 1. Have more matching characters
- * 2. Have fewer transpositions (reordered characters)
+ * 2. Have fewer transpositions (reordered/mistyped characters)
  * 3. Share a common prefix (up to 4 characters)
  */
 public class SimilarityScorer {
-	// Constants
 	private static final Decimal WINKLER_PREFIX_SCALE = 0.1;
 	private static final Integer MAX_PREFIX_LENGTH = 4;
 
@@ -21,51 +20,38 @@ public class SimilarityScorer {
 	 * @return Decimal value between 0 and 1 representing similarity
 	 */
 	public static Decimal calculateSimilarity(String firstString, String secondString) {
-		// Normalize input strings using external utility
 		String normalizedFirst = StringUtil.normalizeName(firstString);
 		String normalizedSecond = StringUtil.normalizeName(secondString);
 
-		// Handle edge cases
 		if (normalizedFirst == normalizedSecond) {
-			return 1.0; // Identical strings
+			return 1.0;
 		}
 
 		if (String.isBlank(normalizedFirst) || String.isBlank(normalizedSecond)) {
-			return 0.0; // Empty strings have no similarity
+			return 0.0;
 		}
 
-		// Calculate Jaro similarity first
 		Decimal jaroSimilarity = calculateJaroSimilarity(normalizedFirst, normalizedSecond);
 
 		if (jaroSimilarity == 0) {
-			return 0.0; // No point calculating Winkler bonus if no Jaro similarity
+			return 0.0;
 		}
 
-		// Apply Winkler prefix bonus
 		Integer commonPrefixLength = getCommonPrefixLength(normalizedFirst, normalizedSecond);
 		Decimal winklerBonus = WINKLER_PREFIX_SCALE * commonPrefixLength * (1 - jaroSimilarity);
 
 		return jaroSimilarity + winklerBonus;
 	}
 
-	/**
-	 * Calculates the Jaro similarity component of the Jaro-Winkler algorithm.
-	 *
-	 * @param firstString First normalized string
-	 * @param secondString Second normalized string
-	 * @return Jaro similarity score
-	 */
 	private static Decimal calculateJaroSimilarity(String firstString, String secondString) {
 		Integer firstLength = firstString.length();
 		Integer secondLength = secondString.length();
 
-		// Calculate maximum allowed distance for character matching
 		Integer maxMatchDistance = Math.max(firstLength, secondLength) / 2 - 1;
 		if (maxMatchDistance < 0) {
 			maxMatchDistance = 0;
 		}
 
-		// Find matching characters
 		MatchingResult matchingResult = findMatchingCharacters(firstString, secondString, maxMatchDistance);
 
 		if (matchingResult.matchCount == 0) {
@@ -89,16 +75,10 @@ public class SimilarityScorer {
 		return (matchRatio1 + matchRatio2 + transpositionRatio) / 3.0;
 	}
 
-	/**
-	 * Finds matching characters between two strings within the allowed distance.
-	 *
-	 * @param firstString First string to analyze
-	 * @param secondString Second string to analyze
-	 * @param maxDistance Maximum distance allowed for matching characters
-	 * @return MatchingResult containing match positions and count
-	 */
 	private static MatchingResult findMatchingCharacters(String firstString, String secondString, Integer maxDistance) {
+		// Store the positions of matching characters in the first string
 		Set<Integer> firstMatches = new Set<Integer>();
+		// Store the positions of matching characters in the second string
 		Set<Integer> secondMatches = new Set<Integer>();
 		Integer matchCount = 0;
 
@@ -110,10 +90,10 @@ public class SimilarityScorer {
 			Integer searchStart = Math.max(0, i - maxDistance);
 			Integer searchEnd = Math.min(i + maxDistance + 1, secondString.length());
 
-			// Look for matching character within the search window
+			// Look for matching characters within the search window
 			for (Integer j = searchStart; j < searchEnd; j++) {
 				if (secondMatches.contains(j)) {
-					continue; // This position already matched
+					continue;
 				}
 
 				String targetChar = secondString.substring(j, j + 1);
@@ -121,7 +101,7 @@ public class SimilarityScorer {
 					firstMatches.add(i);
 					secondMatches.add(j);
 					matchCount++;
-					break; // Found match, move to next character
+					break;
 				}
 			}
 		}
@@ -129,15 +109,6 @@ public class SimilarityScorer {
 		return new MatchingResult(firstMatches, secondMatches, matchCount);
 	}
 
-	/**
-	 * Counts transpositions by comparing the order of matched characters.
-	 *
-	 * @param firstMatches Set of matched positions in first string
-	 * @param secondMatches Set of matched positions in second string
-	 * @param firstString First string
-	 * @param secondString Second string
-	 * @return Number of transpositions
-	 */
 	private static Integer countTranspositions(
 		Set<Integer> firstMatches,
 		Set<Integer> secondMatches,
@@ -150,7 +121,7 @@ public class SimilarityScorer {
 		// Go through matched positions in first string
 		for (Integer firstIndex = 0; firstIndex < firstString.length(); firstIndex++) {
 			if (!firstMatches.contains(firstIndex)) {
-				continue; // Skip unmatched positions
+				continue;
 			}
 
 			// Find corresponding matched position in second string
@@ -172,13 +143,6 @@ public class SimilarityScorer {
 		return transpositions;
 	}
 
-	/**
-	 * Calculates the length of common prefix (up to 4 characters).
-	 *
-	 * @param firstString First string
-	 * @param secondString Second string
-	 * @return Length of common prefix
-	 */
 	private static Integer getCommonPrefixLength(String firstString, String secondString) {
 		Integer prefixLength = 0;
 		Integer maxPrefixLength = Math.min(MAX_PREFIX_LENGTH, Math.min(firstString.length(), secondString.length()));
@@ -190,16 +154,13 @@ public class SimilarityScorer {
 			if (firstChar == secondChar) {
 				prefixLength++;
 			} else {
-				break; // Stop at first non-matching character
+				break;
 			}
 		}
 
 		return prefixLength;
 	}
 
-	/**
-	 * Inner class to encapsulate matching results.
-	 */
 	private class MatchingResult {
 		public Set<Integer> firstMatches;
 		public Set<Integer> secondMatches;

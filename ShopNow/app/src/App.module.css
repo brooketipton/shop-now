@@ -1,0 +1,62 @@
+.container {
+	padding: 20px;
+	max-width: 1400px;
+	margin: 0 auto;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.header {
+	margin-bottom: 32px;
+	padding-bottom: 16px;
+	border-bottom: 2px solid #e5e7eb;
+}
+
+.title {
+	font-size: 32px;
+	font-weight: 700;
+	margin: 0 0 8px 0;
+	color: #111827;
+}
+
+.description {
+	font-size: 16px;
+	color: #6b7280;
+	margin: 0 0 16px 0;
+}
+
+.statusBadge {
+	display: inline-flex;
+	align-items: center;
+	padding: 8px 12px;
+	background-color: #dcfce7;
+	border: 1px solid #bbf7d0;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #166534;
+	transition: background-color 0.2s ease;
+}
+
+.statusBadge:hover {
+	background-color: #bbf7d0;
+}
+
+.statusIcon {
+	margin-right: 6px;
+}
+
+/* Responsive design - mobile first approach */
+@media (max-width: 768px) {
+	.container {
+		padding: 16px;
+	}
+
+	.title {
+		font-size: 24px;
+	}
+
+	.statusBadge {
+		font-size: 12px;
+		padding: 6px 10px;
+	}
+}
