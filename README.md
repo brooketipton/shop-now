@@ -187,33 +187,6 @@ Resolve a duplicate match
 - **CORS Configuration**: Secure cross-origin requests
 - **Audit Trail**: All actions logged in Salesforce
 
-## 🚀 Production Deployment
-
-### Update Connected App
-
-1. Add production domain to Callback URLs
-2. Update Remote Site Settings
-
-### Environment Variables
-
-```env
-# Production .env
-VITE_SALESFORCE_CLIENT_ID=your_consumer_key
-VITE_SALESFORCE_INSTANCE_URL=https://your-production-org.salesforce.com
-VITE_SALESFORCE_REDIRECT_URI=https://your-app.vercel.app
-```
-
-### Deploy
-
-```bash
-# Deploy Salesforce components
-npm run deploy:salesforce
-
-# Build and deploy React app
-npm run build
-# Deploy build/ folder to your hosting platform
-```
-
 ## 🛠 Development Commands
 
 ```bash
