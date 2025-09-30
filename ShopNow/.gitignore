@@ -24,7 +24,6 @@ server/.env
 app/.env
 **/config/secrets.*
 **/*secret*
-**/*key*
 **/*token*
 **/*.pem
 **/*.p12
